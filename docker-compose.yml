@@ -1,0 +1,101 @@
+networks:
+  shop-network:
+    driver: bridge
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - shop-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - ORDER_SERVICE_URL=http://order-service:3000
+      - INVENTORY_SERVICE_URL=http://inventory-service:3000
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3000
+      - CORS_ORIGIN=http://localhost:3000
+    depends_on:
+      - order-service
+      - inventory-service
+      - notification-service
+    networks:
+      - shop-network
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    restart: unless-stopped
+    environment:
+      - BROKER_URL=amqp://guest:guest@message-broker:5672
+      - INVENTORY_SERVICE_URL=http://inventory-service:3000
+    depends_on:
+      message-broker:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+    networks:
+      - shop-network
+
+  message-broker:
+    image: rabbitmq:3-management
+    container_name: message-broker
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - shop-network
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    restart: unless-stopped
+    environment:
+      - BROKER_URL=amqp://guest:guest@message-broker:5672
+    depends_on:
+      message-broker:
+        condition: service_healthy
+    networks:
+      - shop-network
+
+  inventory-service:
+    build: ./inventory-service
+    container_name: inventory-service
+    restart: unless-stopped
+    environment:
+      - BROKER_URL=amqp://guest:guest@message-broker:5672
+    depends_on:
+      message-broker:
+        condition: service_healthy
+    networks:
+      - shop-network
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    restart: unless-stopped
+    environment:
+      - BROKER_URL=amqp://guest:guest@message-broker:5672
+    depends_on:
+      message-broker:
+        condition: service_healthy
+    networks:
+      - shop-network

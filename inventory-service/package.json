@@ -1,0 +1,14 @@
+{
+  "name": "inventory-service",
+  "version": "1.0.0",
+  "description": "Owns the product catalog and reserves stock when payment.success is received",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^2.2.0",
+    "express": "^5.2.1"
+  }
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mini Shop</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Mini Shop</h1>
+        <p class="tagline">Microservices demo with Docker Compose and RabbitMQ</p>
+      </div>
+      <span id="connection" class="connection">Connecting…</span>
+    </header>
+
+    <main class="layout">
+      <section class="card flow" aria-labelledby="flow-title">
+        <h2 id="flow-title">How an order flows</h2>
+        <ol class="flow-steps">
+          <li><strong>Order service</strong><code>order.placed</code></li>
+          <li><strong>Payment service</strong><code>payment.success</code></li>
+          <li><strong>Inventory service</strong><code>inventory.reserved</code></li>
+        </ol>
+        <p class="hint">
+          The notification service listens to every event. Orders over ₱100,000 are declined by the
+          payment service, so you can also see <code>payment.failed</code>.
+        </p>
+      </section>
+
+      <div class="column">
+        <section class="card" aria-labelledby="form-title">
+          <h2 id="form-title">Place an order</h2>
+          <form id="order-form" class="order-form">
+            <label>
+              Full name
+              <input name="customerName" required autocomplete="name" placeholder="Juan Dela Cruz" />
+            </label>
+            <label>
+              Email
+              <input name="email" type="email" required autocomplete="email" placeholder="juan@example.com" />
+            </label>
+            <label>
+              Product
+              <select name="productId" id="product-select" required>
+                <option value="">Loading products…</option>
+              </select>
+            </label>
+            <label>
+              Quantity
+              <input name="quantity" type="number" min="1" step="1" value="1" required />
+            </label>
+            <button type="submit" id="submit-button">Place order</button>
+            <p id="form-message" class="form-message" role="status" hidden></p>
+          </form>
+        </section>
+
+        <section class="card" aria-labelledby="products-title">
+          <h2 id="products-title">Products</h2>
+          <p class="hint">Live stock from the inventory service. Click a product to select it.</p>
+          <ul id="products" class="products"></ul>
+        </section>
+      </div>
+
+      <div class="column">
+        <section class="card" aria-labelledby="orders-title">
+          <h2 id="orders-title">Orders</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Item</th>
+                  <th class="num">Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="orders"></tbody>
+            </table>
+          </div>
+          <p id="orders-empty" class="empty">No orders yet. Place one to watch it move through the services.</p>
+        </section>
+
+        <section class="card" aria-labelledby="notifications-title">
+          <h2 id="notifications-title">Notifications</h2>
+          <ul id="notifications" class="notifications"></ul>
+          <p id="notifications-empty" class="empty">Messages from the notification service will appear here.</p>
+        </section>
+      </div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

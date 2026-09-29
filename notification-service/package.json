@@ -1,0 +1,14 @@
+{
+  "name": "notification-service",
+  "version": "1.0.0",
+  "description": "Listens to every order event and sends (simulated) customer notifications",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^2.2.0",
+    "express": "^5.2.1"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "order-service",
+  "version": "1.0.0",
+  "description": "Creates orders, publishes order.placed and tracks order status from later events",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^2.2.0",
+    "express": "^5.2.1"
+  }
+}

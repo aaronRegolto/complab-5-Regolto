@@ -1,0 +1,13 @@
+{
+  "name": "payment-service",
+  "version": "1.0.0",
+  "description": "Processes payments for new orders and publishes payment.success or payment.failed",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^2.2.0"
+  }
+}
